@@ -1,0 +1,96 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@model IEnumerable<T.Models.Book>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin")){ 
+<p>
+    <a asp-action="Create"><span style="color: blue;" class="fa fa-edit"></span></a>
+</p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastUpdated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Place)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+            if (item.UserId == UserManager.GetUserId(User))
+            {
+                <tr>
+                    <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Place.CityName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Users.UserName)
+            </td>
+            <td>
+                 @if (item.Status == BookState.InCart)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id"><span style="color: blue;" class="fa fa-edit"></span></a>
+                            <!--<a asp-action="Details" asp-route-id="@item.Id"><span class="fa fa-info"></span></a> -->
+                            <a asp-action="Delete" asp-route-id="@item.Id"><span style="color:red;" class="fa fa-trash"></span></a>
+                            <a asp-action="Confirm" asp-route-id="@item.Id"><span style="color:green;" class="fa fa-check"></span></a>
+                        }
+            </td>
+        </tr>
+        }
+            @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastUpdated)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Place.CityName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Users.UserName)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id"><span style="color: green;" class="fa fa-edit"></span></a>
+                        <!--<a asp-action="Details" asp-route-id="@item.Id"><span class="fa fa-info"></span></a> -->
+                        <a asp-action="Delete" asp-route-id="@item.Id"><span style="color:red;" class="fa fa-trash"></span></a>
+                    </td>
+                </tr>
+
+            }
+}
+    </tbody>
+</table>
